@@ -48,7 +48,7 @@ GTFOCK_HOME = ${HOME}/Work/CHEMISTRY/GTFOCK
 
 ERD_LIBDIR = ${GTFOCK_HOME}/libcint
 ERD_INCDIR = ${GTFOCK_HOME}/libcint
-ERD_LIBS   = ${ERD_LIBDIR}/libcint.a ${GTFOCK_HOME}/gtfock-simint/build-avx2/install/lib64/libsimint.a
+ERD_LIBS   = ${ERD_LIBDIR}/libcint.a ${GTFOCK_HOME}/gtfock-simint/build-avx2/install/lib/libsimint.a
 
 GTM_LIBDIR = ${GTFOCK_HOME}/GTMatrix
 GTM_INCDIR = ${GTFOCK_HOME}/GTMatrix
