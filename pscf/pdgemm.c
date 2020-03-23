@@ -519,8 +519,7 @@ void allocate_tmpbuf(int nrows, int ncols, int *nr, int *nc, tmpbuf_t *tmpbuf)
     tmpbuf->S_i = tmpbuf->A_i + block_size_align64b;
     tmpbuf->C_i = tmpbuf->S_i + block_size_align64b;
 
-    #pragma omp parallel for schedule(static)
-    PRAGMA_SIMD
+    #pragma omp parallel for simd schedule(static)
     for (int i = 0; i < nrows0 * ncols0; i++)
     {
         tmpbuf->A[i] = 0;
