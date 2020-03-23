@@ -263,8 +263,7 @@ int main (int argc, char **argv)
     if (myrank == 0) {
         if (argc != 8) {
             usage(argv[0]);
-            MPI_Finalize();
-            exit(0);
+            MPI_Abort(MPI_COMM_WORLD,argc);
         }
         // init parameters
         nprow_fock = atoi(argv[3]);
