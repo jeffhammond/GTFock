@@ -184,7 +184,7 @@ void my_peig(GTMatrix_t gtm_A, GTMatrix_t gtm_B, int n, int nprow, int npcol, do
     
     for (int i = 0; i < nrows; i++) 
     {
-        #pragma simd
+        PRAGMA_SIMD
         for (int j = 0; j < ncols; j++) 
             A[j * nrows + i] = Z[i * ncols + j];
     }

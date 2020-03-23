@@ -5,6 +5,8 @@
 #include <omp.h>
 #include "CInt.h"
 
+#include "GTPragma.h"
+
 #include "GTMatrix.h"
 #include "GTM_Task_Queue.h"
 #include "utils.h"
