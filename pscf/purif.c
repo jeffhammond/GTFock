@@ -112,7 +112,7 @@ static void config_purif(purif_t * purif, int purif_offload)
     }
 
     #pragma omp parallel for schedule(static)
-    #pragma simd
+    PRAGMA_SIMD
     for(int i=0; i < nrows * ncols; i++)
     {
         purif->D_block[i]  = 0.0;
@@ -388,7 +388,7 @@ int compute_purification(purif_t * purif, double *F_block, double *D_block)
                 if (c < 0.5) 
                 {
                     #pragma omp parallel for reduction(+: errnorm_local)
-                    #pragma simd
+                    PRAGMA_SIMD
                     for (int i = 0; i < nrows * ncols; i++) 
                     {
                         double D_D2 = D_block[i] - D2_block[i];
@@ -399,7 +399,7 @@ int compute_purification(purif_t * purif, double *F_block, double *D_block)
                     }
                 } else {
                     #pragma omp parallel for reduction(+: errnorm_local)
-                    #pragma simd
+                    PRAGMA_SIMD
                     for (int i = 0; i < nrows * ncols; i++) 
                     {
                         double D_D2 = D_block[i] - D2_block[i];

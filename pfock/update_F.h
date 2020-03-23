@@ -30,7 +30,7 @@ static inline void atomic_add_vector(double *dst, double *src, int length)
 
 static inline void direct_add_vector(double *dst, double *src, int length)
 {
-    #pragma simd
+    PRAGMA_SIMD
     for (int i = 0; i < length; i++) 
         dst[i] += src[i];
 }
