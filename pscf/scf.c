@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <float.h>
+#include <limits.h>
 #include <assert.h>
 #include <mpi.h>
 #include <string.h>
@@ -32,6 +33,8 @@ static void usage(char *call)
            "<#nodes per column> "
            "<np for purification> "
            "<ntasks> " "<#iters>\n", call);
+    printf("-or-\n");
+    printf("Usage: %s <basis> <xyz>\n", call);
 }
 
 
@@ -261,17 +264,50 @@ int main (int argc, char **argv)
     int nfunctions;
     int niters;
     if (myrank == 0) {
-        if (argc != 8) {
+        if (argc != 8 && argc !=3) {
             usage(argv[0]);
             MPI_Finalize();
             exit(0);
         }
+
+        int nprow_fock_auto  = 0;
+        int npcol_fock_auto  = 0;
+        int nprow_purif_auto = 0;
+        int nblks_fock_auto  = 0;
+        int niters_auto      = 0;
+        if (argc == 3) {
+
+            // default row x col decomposition (exact)
+            int dims[2] = {0,0};
+            int rc = MPI_Dims_create(nprocs, 2, dims);
+            if (rc != MPI_SUCCESS) {
+                printf("MPI_Dims_create failed: dims[]={%d,%d}\n", dims[0], dims[1]);
+                MPI_Abort(MPI_COMM_WORLD,2);
+            }
+            nprow_fock_auto = dims[0];
+            npcol_fock_auto = dims[1];
+
+            // default cubic decomposition (inexact)
+            double lesser_cube_root = floor( cbrt( (double)nprocs ) );
+            if ( lesser_cube_root > INT_MAX ) {
+                printf("Math is confused: %f = floor( %f = cbrt( %f = %d )\n", floor( cbrt( (double)nprocs ) ), cbrt( (double)nprocs ), (double)nprocs, nprocs);
+                MPI_Abort(MPI_COMM_WORLD,3);
+            }
+            nprow_purif_auto = (int)lesser_cube_root;
+
+            // default number of tasks (?)
+            nblks_fock_auto  = 1; // this seems to be the only safe value...
+
+            // default iteration count
+            niters_auto      = 1000; // assume user is paying attention to job...
+        }
+
         // init parameters
-        nprow_fock = atoi(argv[3]);
-        npcol_fock = atoi(argv[4]);
-        nprow_purif = atoi(argv[5]);
-        nblks_fock = atoi(argv[6]);
-        niters = atoi(argv[7]);
+        nprow_fock  = (argc>3) ? atoi(argv[3]) : nprow_fock_auto;
+        npcol_fock  = (argc>4) ? atoi(argv[4]) : npcol_fock_auto;
+        nprow_purif = (argc>5) ? atoi(argv[5]) : nprow_purif_auto;
+        nblks_fock  = (argc>6) ? atoi(argv[6]) : nblks_fock_auto;
+        niters      = (argc>7) ? atoi(argv[7]) : niters_auto;
         assert(nprow_fock * npcol_fock == nprocs);
         assert(nprow_purif * nprow_purif * nprow_purif  <= nprocs);
         assert(niters > 0);       
